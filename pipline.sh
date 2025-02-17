@@ -2,7 +2,7 @@
 
 JENKINS_URL="http://localhost:8080"
 JENKINS_USER="admin"
-TOKEN_FILE="/root/jenkins_api_token.txt"
+TOKEN_FILE="/root/token.txt"
 
 # Отримуємо API-токен із файлу
 if [[ ! -f "$TOKEN_FILE" ]]; then
