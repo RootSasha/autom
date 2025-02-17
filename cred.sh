@@ -1,15 +1,12 @@
 #!/bin/bash
 
-JENKINS_URL="http://localhost:8080"  # Адреса Jenkins
-JENKINS_USER="admin"                 # Логін адміністратора
-JENKINS_PASSWORD="1167b4ceaec1d7fdfe055da3790f444c4b"                  # Пароль адміністратора
-CREDENTIAL_ID="ssh-key-jenkins"       # ID для credentials
-SSH_KEY_PATH="/root/.ssh/id_ed25519"  # Шлях до SSH-ключа
+SSH_KEY_PATH="/root/.ssh/id_ed25519"
+GITHUB_EMAIL="xxxxxxxxxxxxx@gmail.com"
 
 # 🔍 Перевіряємо, чи існує SSH-ключ
 if [[ ! -f "$SSH_KEY_PATH" ]]; then
     echo "🔑 SSH-ключ не знайдено, створюємо новий..."
-    ssh-keygen -t ed25519 -f "$SSH_KEY_PATH" -N "" -q
+    ssh-keygen -t ed25519 -f "$SSH_KEY_PATH" -C "$GITHUB_EMAIL" -N "" -q
     echo "✅ Новий SSH-ключ створено!"
 else
     echo "✅ SSH-ключ вже існує!"
@@ -19,18 +16,17 @@ fi
 SSH_PRIVATE_KEY=$(cat "$SSH_KEY_PATH")
 SSH_PUBLIC_KEY=$(cat "$SSH_KEY_PATH.pub")
 
-# 🔄 Отримуємо Crumb
-CRUMB=$(curl -s -u "$JENKINS_USER:$JENKINS_PASSWORD" "$JENKINS_URL/crumbIssuer/api/json" | jq -r '.crumb')
-
-# 🔥 Groovy-скрипт для додавання Global SSH Credentials у Jenkins
-GROOVY_SCRIPT=$(cat <<EOF
+# 📌 Записуємо Groovy-скрипт у файл
+cat <<EOF > /var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy
 import jenkins.model.*
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.domains.*
 import com.cloudbees.plugins.credentials.impl.*
 import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
 
-def instance = Jenkins.getInstanceOrNull()
+println("[INIT] Починаємо додавання SSH credentials...")
+
+def instance = Jenkins.instance
 if (instance == null) {
     println("❌ Помилка: неможливо отримати інстанс Jenkins")
     return
@@ -38,18 +34,18 @@ if (instance == null) {
 
 def credentialsStore = instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
 
-// 🛠️ Перевіряємо, чи існують credentials із таким ID
-def existingCred = credentialsStore.getCredentials(Domain.global()).find { it.id == "$CREDENTIAL_ID" }
+def credentialId = "ssh-key-jenkins"
+def existingCred = credentialsStore.getCredentials(Domain.global()).find { it.id == credentialId }
 if (existingCred) {
-    println("🔄 Credentials '$CREDENTIAL_ID' вже існують. Видаляємо для оновлення...")
+    println("🔄 Credentials '\${credentialId}' вже існують. Видаляємо для оновлення...")
     credentialsStore.removeCredentials(Domain.global(), existingCred)
 }
 
 // 🌍 Створюємо Global SSH Username with Private Key
-def sshKey = new BasicSSHUserPrivateKey( (
-    CredentialsScope.GLOBAL,  // ВАЖЛИВО: робить credentials глобальними
-    "$CREDENTIAL_ID",
-    "jenkins",  // Користувач для SSH
+def sshKey = new BasicSSHUserPrivateKey(
+    CredentialsScope.GLOBAL,
+    credentialId,
+    "jenkins",
     new BasicSSHUserPrivateKey.DirectEntryPrivateKeySource("""$SSH_PRIVATE_KEY"""),
     "",
     "Автоматично створені Global SSH credentials"
@@ -58,16 +54,10 @@ def sshKey = new BasicSSHUserPrivateKey( (
 credentialsStore.addCredentials(Domain.global(), sshKey)
 instance.save()
 
-println("✅ Global SSH credentials '$CREDENTIAL_ID' (SSH Username with Private Key) додано успішно!")
+println("✅ Global SSH credentials '\${credentialId}' додано успішно!")
 EOF
-)
 
-# 🚀 Виконуємо Groovy-скрипт через Jenkins API
-echo "🚀 Додаємо Global SSH credentials у Jenkins..."
-curl -X POST -u "$JENKINS_USER:$JENKINS_PASSWORD" \
-     -H "Jenkins-Crumb:$CRUMB" \
-     --data-urlencode "script=$GROOVY_SCRIPT" "$JENKINS_URL/scriptText"
+echo "✅ Groovy-скрипт для додавання SSH-ключа створено: /var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy"
 
-echo "✅ Завершено!"
-echo "🔹 Публічний ключ (додай його на сервер!):"
+echo "🔹 Публічний ключ (додай його на сервер або GitHub!):"
 echo "$SSH_PUBLIC_KEY"
