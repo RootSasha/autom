@@ -3,14 +3,16 @@
 SSH_KEY_PATH="/root/.ssh/id_ed25519"
 GITHUB_EMAIL="xxxxxxxxxxxxx@gmail.com"
 
-# 🔍 Перевіряємо, чи існує SSH-ключ
-if [[ ! -f "$SSH_KEY_PATH" ]]; then
-    echo "🔑 SSH-ключ не знайдено, створюємо новий..."
-    ssh-keygen -t ed25519 -f "$SSH_KEY_PATH" -C "$GITHUB_EMAIL" -N "" -q
-    echo "✅ Новий SSH-ключ створено!"
-else
-    echo "✅ SSH-ключ вже існує!"
+# 🗑 Видаляємо старі SSH-ключі, якщо вони є
+if [[ -f "$SSH_KEY_PATH" || -f "$SSH_KEY_PATH.pub" ]]; then
+    echo "🗑 Видаляємо старі SSH-ключі..."
+    rm -f "$SSH_KEY_PATH" "$SSH_KEY_PATH.pub"
 fi
+
+# 🔑 Створюємо новий SSH-ключ
+echo "🔑 Генеруємо новий SSH-ключ..."
+ssh-keygen -t ed25519 -f "$SSH_KEY_PATH" -C "$GITHUB_EMAIL" -N "" -q
+echo "✅ Новий SSH-ключ створено!"
 
 # Читаємо приватний та публічний ключ
 SSH_PRIVATE_KEY=$(cat "$SSH_KEY_PATH")
