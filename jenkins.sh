@@ -26,4 +26,3 @@ fi
 
 echo "✅ Jenkins встановлено успішно!"
 
-bash user.sh
