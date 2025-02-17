@@ -2,6 +2,8 @@
 
 SSH_KEY_PATH="/root/.ssh/id_ed25519"
 GITHUB_EMAIL="xxxxxxxxxxxxx@gmail.com"
+CREDENTIAL_ID="ssh-key-jenkins"
+GROOVY_SCRIPT_PATH="/var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy"
 
 # 🗑 Видаляємо старі SSH-ключі, якщо вони є
 if [[ -f "$SSH_KEY_PATH" || -f "$SSH_KEY_PATH.pub" ]]; then
@@ -18,8 +20,13 @@ echo "✅ Новий SSH-ключ створено!"
 SSH_PRIVATE_KEY=$(cat "$SSH_KEY_PATH")
 SSH_PUBLIC_KEY=$(cat "$SSH_KEY_PATH.pub")
 
+# 📌 Записуємо SSH-ключ у файл для подальшого використання
+PRIVATE_KEY_FILE="/root/jenkins_ssh_key.txt"
+echo "$SSH_PRIVATE_KEY" | sudo tee "$PRIVATE_KEY_FILE" > /dev/null
+sudo chmod 600 "$PRIVATE_KEY_FILE"
+
 # 📌 Записуємо Groovy-скрипт у файл
-cat <<EOF > /var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy
+cat <<EOF | sudo tee "$GROOVY_SCRIPT_PATH" > /dev/null
 import jenkins.model.*
 import com.cloudbees.plugins.credentials.*
 import com.cloudbees.plugins.credentials.domains.*
@@ -36,7 +43,7 @@ if (instance == null) {
 
 def credentialsStore = instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
 
-def credentialId = "ssh-key-jenkins"
+def credentialId = "$CREDENTIAL_ID"
 def existingCred = credentialsStore.getCredentials(Domain.global()).find { it.id == credentialId }
 if (existingCred) {
     println("🔄 Credentials '\${credentialId}' вже існують. Видаляємо для оновлення...")
@@ -59,7 +66,7 @@ instance.save()
 println("✅ Global SSH credentials '\${credentialId}' додано успішно!")
 EOF
 
-echo "✅ Groovy-скрипт для додавання SSH-ключа створено: /var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy"
+echo "✅ Groovy-скрипт для додавання SSH-ключа створено: $GROOVY_SCRIPT_PATH"
 
 echo "🔹 Публічний ключ (додай його на сервер або GitHub!):"
 echo "$SSH_PUBLIC_KEY"
