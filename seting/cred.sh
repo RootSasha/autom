@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SSH_KEY_PATH="/root/.ssh/id_ed25519"
-GITHUB_EMAIL="xxxxxxxxxxxxx@gmail.com"
+GITHUB_EMAIL="sashamankovsky2019@gmail.com"
 CREDENTIAL_ID="ssh-key-jenkins"
 GROOVY_SCRIPT_PATH="/var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy"
 
