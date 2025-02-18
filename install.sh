@@ -58,3 +58,6 @@ sudo systemctl restart jenkins
 echo "✅ Jenkins встановлено та налаштовано!"
 echo "🔹 Логін: admin"
 echo "🔹 Пароль: 1"
+
+echo "Інсталяція плагінів"
+bash /plugins/plugin.sh
