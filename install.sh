@@ -60,4 +60,4 @@ echo "🔹 Логін: admin"
 echo "🔹 Пароль: 1"
 
 echo "Інсталяція плагінів"
-bash /seting/plugin.sh
+bash seting/plugin.sh
