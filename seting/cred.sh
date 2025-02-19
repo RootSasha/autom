@@ -71,7 +71,23 @@ echo "✅ Groovy-скрипт для додавання SSH-ключа ство�
 echo "🔹 Публічний ключ (додай його на сервер або GitHub!):"
 echo "$SSH_PUBLIC_KEY"
 
-# 🔄 Перезапускаємо Jenkins для застосування змін
-echo "🚀 Перезапускаємо Jenkins..."
-sudo systemctl restart jenkins
-echo "✅ Jenkins перезапущено!"
+sudo -u jenkins mkdir -p /var/lib/jenkins/.ssh
+sudo chmod 700 /var/lib/jenkins/.ssh
+sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
+
+echo "🔑 Додаємо GitHub до known_hosts..."
+
+# Додаємо ключ GitHub у known_hosts (без підтвердження)
+sudo -u jenkins ssh-keyscan -H github.com | sudo tee /var/lib/jenkins/.ssh/known_hosts > /dev/null
+
+# Встановлюємо правильні права на файл
+sudo chmod 600 /var/lib/jenkins/.ssh/known_hosts
+sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/known_hosts
+
+# Даємо дозволи у файлі visudo
+echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a visudo
+
+# Даймо права докеру запускати pipeline
+sudo usermod -aG docker jenkins
+
+bash pipline/pipeline.sh

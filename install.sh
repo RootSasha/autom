@@ -2,7 +2,7 @@
 
 echo "🔄 Оновлення системи та встановлення необхідних компонентів..."
 sudo apt update -y && sudo apt upgrade -y
-sudo apt install -y openjdk-17-jdk curl unzip
+sudo apt install -y openjdk-17-jdk curl unzip docker-compose
 
 echo "🔑 Додаємо офіційний репозиторій Jenkins..."
 curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
@@ -47,10 +47,6 @@ instance.save()
 
 println("✅ Адміністратор створений: admin / 1")
 EOF
-
-echo "🧹 Очищуємо кеш Jenkins для застосування змін..."
-sudo rm -rf /var/lib/jenkins/jenkins.install.UpgradeWizard.state
-sudo rm -rf /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
 
 echo "🔄 Перезапуск Jenkins..."
 sudo systemctl restart jenkins
