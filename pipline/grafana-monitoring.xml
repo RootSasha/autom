@@ -1,0 +1,25 @@
+<flow-definition plugin="workflow-job">
+    <actions/>
+    <description>Pipeline для grafana-monitoring</description>
+    <keepDependencies>false</keepDependencies>
+    <properties/>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition">
+        <scm class="hudson.plugins.git.GitSCM">
+            <configVersion>2</configVersion>
+            <userRemoteConfigs>
+                <hudson.plugins.git.UserRemoteConfig>
+                    <url>git@github.com:RootSasha/grafana.git</url>
+                    <credentialsId>ssh-key-jenkins</credentialsId>  <!-- 🔹 Використовуємо заданий ID SSH-ключа -->
+                </hudson.plugins.git.UserRemoteConfig>
+            </userRemoteConfigs>
+            <branches>
+                <hudson.plugins.git.BranchSpec>
+                    <name>*/main</name>  <!-- 🔹 Використовуйте потрібну гілку -->
+                </hudson.plugins.git.BranchSpec>
+            </branches>
+        </scm>
+        <scriptPath>Jenkinsfile</scriptPath>  <!-- 🔹 Jenkinsfile має бути у репозиторії -->
+        <sandbox>true</sandbox>
+    </definition>
+    <triggers/>
+</flow-definition>
