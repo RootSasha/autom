@@ -85,7 +85,7 @@ sudo chmod 600 /var/lib/jenkins/.ssh/known_hosts
 sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/known_hosts
 
 # Даємо дозволи у файлі visudo
-echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a visudo
+echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
 
 # Даймо права докеру запускати pipeline
 sudo usermod -aG docker jenkins

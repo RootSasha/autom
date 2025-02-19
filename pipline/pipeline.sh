@@ -4,6 +4,8 @@ JENKINS_URL="http://192.168.0.113:8080"
 JENKINS_USER="admin"
 JENKINS_PASSWORD="1"  # 🔹 Краще використовувати API-токен
 CREDENTIAL_ID="ssh-key-jenkins"  # 🔹 Використовуємо правильний ID SSH-ключа
+JOB_DIR="jenkins_jobs"
+mkdir -p "$JOB_DIR"
 
 CLI_JAR="jenkins-cli.jar"
 
@@ -19,7 +21,10 @@ for job in "${!pipelines[@]}"; do
 
     echo "🚀 Створюємо пайплайн: $job (джерело: $REPO_URL)..."
 
-    cat <<EOF > "$job.xml"
+    # Шлях до XML-файлу
+    JOB_XML="$JOB_DIR/$job.xml"
+
+    cat <<EOF > "$JOB_XML"
 <flow-definition plugin="workflow-job">
     <actions/>
     <description>Pipeline для $job</description>
@@ -48,7 +53,7 @@ for job in "${!pipelines[@]}"; do
 EOF
 
     # 🔹 Створюємо pipeline job у Jenkins
-    java -jar "$CLI_JAR" -s "$JENKINS_URL" -auth "$JENKINS_USER:$JENKINS_PASSWORD" create-job "$job" < "$job.xml"
+    java -jar "$CLI_JAR" -s "$JENKINS_URL" -auth "$JENKINS_USER:$JENKINS_PASSWORD" create-job "$job" < "$JOB_XML"
 
     if [[ $? -eq 0 ]]; then
         echo "✅ $job створено успішно!"
