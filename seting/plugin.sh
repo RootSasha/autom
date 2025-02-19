@@ -52,9 +52,9 @@ sudo rm -rf /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
 
 echo "RUNNING" | sudo tee /var/lib/jenkins/jenkins.install.UpgradeWizard.state > /dev/null
 
-# Запускаємо cred.sh
-bash seting/cred.sh
-
 echo "🔄 Перезапуск Jenkins..."
 sudo systemctl restart jenkins
 echo "✅ Jenkins перезапущено!"
+
+# Запускаємо cred.sh
+bash seting/cred.sh
