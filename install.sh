@@ -48,12 +48,12 @@ instance.save()
 println("✅ Адміністратор створений: admin / 1")
 EOF
 
+echo "Інсталяція плагінів"
+bash seting/plugin.sh
+
 echo "🔄 Перезапуск Jenkins..."
 sudo systemctl restart jenkins
 
 echo "✅ Jenkins встановлено та налаштовано!"
 echo "🔹 Логін: admin"
 echo "🔹 Пароль: 1"
-
-echo "Інсталяція плагінів"
-bash seting/plugin.sh
