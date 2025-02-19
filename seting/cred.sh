@@ -90,4 +90,6 @@ echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
 # Даймо права докеру запускати pipeline
 sudo usermod -aG docker jenkins
 
+sleep 30
+
 bash pipline/pipeline.sh
