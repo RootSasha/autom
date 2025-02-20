@@ -4,13 +4,8 @@ SSH_KEY_PATH="/root/.ssh/id_ed25519"
 GITHUB_EMAIL="sashamankovsky2019@gmail.com"
 CREDENTIAL_ID="ssh-key-jenkins"
 GROOVY_SCRIPT_PATH="/var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy"
-<<<<<<< HEAD
 GITHUB_USERNAME="YourGitHubUsername"
 GITHUB_TOKEN="YourGitHubToken"
-=======
-GITHUB_USERNAME="RootSasha"
-GITHUB_TOKEN="you_token"
->>>>>>> c716eef (Initial commit)
 
 # 🛠 Перевіряємо, чи існують SSH-ключі
 if [[ -f "$SSH_KEY_PATH" && -f "$SSH_KEY_PATH.pub" ]]; then
