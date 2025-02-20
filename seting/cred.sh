@@ -91,5 +91,3 @@ sudo grep -q "^jenkins ALL=(ALL) NOPASSWD: ALL" /etc/sudoers || sudo sed -i '1s|
 sudo usermod -aG docker jenkins
 
 sleep 30
-
-bash pipline/pipeline.sh
