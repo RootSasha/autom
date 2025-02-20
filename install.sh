@@ -2,7 +2,7 @@
 
 echo "🔄 Оновлення системи та встановлення необхідних компонентів..."
 sudo apt update -y && sudo apt upgrade -y
-sudo apt install -y openjdk-17-jdk curl unzip docker-compose
+sudo apt install -y openjdk-17-jdk curl unzip docker-compose gh
 
 echo "🔑 Додаємо офіційний репозиторій Jenkins..."
 curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
