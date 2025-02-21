@@ -5,6 +5,9 @@ SSH_KEY_PATH="/root/.ssh/id_ed25519"
 GITHUB_EMAIL="sashamankovsky2019@gmail.com"
 CREDENTIAL_ID="ssh-key-jenkins"
 GROOVY_SCRIPT_PATH="/var/lib/jenkins/init.groovy.d/add-ssh-credentials.groovy"
+# Додаємо вебхук до репозиторію для автоматичного запуску пайплайнів
+REPO_NAME="RootSasha/diplome-site"  # Змініть репозиторій, якщо потрібно
+JENKINS_WEBHOOK_URL="http://192.168.0.113:8080/github-webhook/"
 
 # Перевіряємо, чи існує SSH-ключ, і створюємо його, якщо ні
 if [[ ! -f "$SSH_KEY_PATH" ]]; then
@@ -105,5 +108,14 @@ echo "$GITHUB_TOKEN" | gh auth login --with-token
 
 # Додавання публічного ключа до GitHub
 gh ssh-key add "$SSH_KEY_PATH.pub" -t "Jenkins SSH Key"
+
+# Перевіряємо, чи існує вебхук
+if gh api repos/$REPO_NAME/hooks | grep -q "$JENKINS_WEBHOOK_URL"; then
+  echo "✅ Вебхук вже існує."
+else
+  echo "➕ Додаємо новий вебхук..."
+  gh api repos/$REPO_NAME/hooks -f config.url="$JENKINS_WEBHOOK_URL" -f config.content_type="json" -f events[]="push" -f active=true
+  echo "✅ Вебхук успішно додано!"
+fi
 
 echo "✅ Публічний ключ успішно додано до GitHub!"
