@@ -50,12 +50,6 @@ for plugin in "${plugins[@]}"; do
     fi
 done
 
-echo " Очищення кешу Jenkins (опціонально)..."
-# Видалення кешу може бути небезпечним, тому зроблено опціональним
-# sudo rm -rf /var/lib/jenkins/jenkins.install.UpgradeWizard.state
-# sudo rm -rf /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
-# echo "RUNNING" | sudo tee /var/lib/jenkins/jenkins.install.UpgradeWizard.state > /dev/null
-
 echo " Перезапуск Jenkins..."
 sudo systemctl restart jenkins
 echo "✅ Jenkins перезапущено!"
