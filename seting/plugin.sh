@@ -36,8 +36,8 @@ plugins=(
     "email-ext"
     "mailer"
     "dark-theme"
-    "workflow-job" # Додано workflow-job
-    "workflow-cps" # Додано workflow-cps
+    "workflow-job"
+    "workflow-cps"
 )
 
 for plugin in "${plugins[@]}"; do
@@ -49,6 +49,12 @@ for plugin in "${plugins[@]}"; do
       echo "✅ Плагін $plugin встановлено"
     fi
 done
+
+echo " Очищення кешу Jenkins (опціонально)..."
+ # Видалення кешу може бути небезпечним, тому зроблено опціональним
+ # sudo rm -rf /var/lib/jenkins/jenkins.install.UpgradeWizard.state
+ # sudo rm -rf /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
+ # echo "RUNNING" | sudo tee /var/lib/jenkins/jenkins.install.UpgradeWizard.state > /dev/null
 
 echo " Перезапуск Jenkins..."
 sudo systemctl restart jenkins
