@@ -4,7 +4,7 @@ source config.sh
 
 echo "Оновлення системи та встановлення необхідних компонентів..."
 sudo apt update -y && sudo apt upgrade -y
-sudo apt install -y openjdk-17-jdk curl unzip docker-compose git awscli
+sudo apt install -y openjdk-17-jdk curl unzip docker-compose git awscli gh
 
 echo " Додаємо репозиторій GitHub CLI..."
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
