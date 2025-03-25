@@ -85,6 +85,7 @@ bash plugin.sh
 # Видалення файлів для обходу Setup Wizard (на всякий випадок)
 sudo rm -rf /var/lib/jenkins/jenkins.install.UpgradeWizard.state
 sudo rm -rf /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
+bash cred.sh
 
 bash pipeline.sh
 
