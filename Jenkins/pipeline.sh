@@ -10,8 +10,8 @@ CLI_JAR="jenkins_files/jenkins-cli.jar"
 mkdir -p "$JOB_DIR"
 
 declare -A pipelines=(
-    ["grafana-monitoring"]="git@github.com:RootSasha/grafana.git"
-    ["monitoring-site"]="git@github.com:RootSasha/diplome-site.git"
+    ["grafana"]="git@github.com:RootSasha/grafana.git"
+    ["site"]="git@github.com:RootSasha/diplome-site.git"
 )
 
 # Перевірка, чи існує jenkins-cli.jar
