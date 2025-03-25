@@ -1,9 +1,7 @@
 #!/bin/bash
 
-GITHUB_TOKEN=""
-SSH_KEY_PATH="/root/.ssh/id_ed25519"
-GITHUB_EMAIL="sashamankovsky2019@gmail.com"
-CREDENTIAL_ID="ssh-key-jenkins"
+source config.sh
+
 GROOVY_SCRIPT_PATH="/var/lib/jenkins/init.groovy.d/add-credentials.groovy"
 
 if [[ ! -f "$SSH_KEY_PATH" ]]; then
@@ -87,9 +85,6 @@ gh ssh-key add "$SSH_KEY_PATH.pub" -t "Jenkins SSH Key"
 echo "✅ Публічний ключ успішно додано до GitHub!"
 
 # Додавання docker login для користувача jenkins
-export DOCKERHUB_USER="sasha22mk"
-export DOCKERHUB_PASSWORD=""
-
 sudo -u jenkins /bin/bash -c "echo '$DOCKERHUB_PASSWORD' | docker login -u '$DOCKERHUB_USER' --password-stdin"
 
 if [ $? -eq 0 ]; then

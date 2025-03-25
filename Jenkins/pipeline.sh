@@ -1,13 +1,6 @@
 #!/bin/bash
 
-JENKINS_URL="http://16.16.217.80:8080"
-JENKINS_USER="admin"
-JENKINS_PASSWORD="1"
-CREDENTIAL_ID="ssh-key-jenkins"
-JOB_DIR="jenkins_jobs"
-CLI_JAR="jenkins_files/jenkins-cli.jar"
-
-mkdir -p "$JOB_DIR"
+source config.sh
 
 declare -A pipelines=(
     ["grafana"]="git@github.com:RootSasha/grafana.git"

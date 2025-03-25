@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source config.sh
+
 echo "Оновлення системи та встановлення необхідних компонентів..."
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install -y openjdk-17-jdk curl unzip docker-compose git
@@ -36,8 +38,6 @@ fi
 
 echo "⚙️ Завантаження jenkins-cli.jar у репозиторій..."
 mkdir -p jenkins_files
-JENKINS_URL="http://16.16.217.80:8080"
-CLI_JAR="jenkins_files/jenkins-cli.jar"
 
 if [ ! -f "$CLI_JAR" ]; then
     curl -sSL "${JENKINS_URL}/jnlpJars/jenkins-cli.jar" -o "$CLI_JAR"
@@ -47,12 +47,13 @@ else
     echo "✅ jenkins-cli.jar вже існує у jenkins_files!"
 fi
 
-echo "⚙️ Створюємо Groovy-скрипт для автоматичного створення адміністратора..."
+echo "⚙️ Створюємо Groovy-скрипт для автоматичного створення адміністратора та обходу Setup Wizard..."
 sudo mkdir -p /var/lib/jenkins/init.groovy.d
 cat <<EOF | sudo tee /var/lib/jenkins/init.groovy.d/basic-security.groovy
 #!groovy
 import jenkins.model.*
 import hudson.security.*
+import jenkins.install.InstallState
 
 def instance = Jenkins.getInstanceOrNull()
 if (instance == null) {
@@ -61,29 +62,32 @@ if (instance == null) {
 }
 
 def hudsonRealm = new HudsonPrivateSecurityRealm(false)
-hudsonRealm.createAccount("admin", "1")
+hudsonRealm.createAccount("$JENKINS_USER", "$JENKINS_PASSWORD")
 instance.setSecurityRealm(hudsonRealm)
 
 def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
 instance.setAuthorizationStrategy(strategy)
+
+// Обхід Setup Wizard
+instance.installState = InstallState.INITIALIZED
+
 instance.save()
 
-println("✅ Адміністратор створений: admin / 1")
+println("✅ Адміністратор створений: $JENKINS_USER / $JENKINS_PASSWORD")
+println("✅ Setup Wizard пропущено.")
 EOF
-
-bash plugin.sh
-
-# Видалення файлів для обходу Setup Wizard
-sudo rm -rf /var/lib/jenkins/jenkins.install.UpgradeWizard.state
-sudo rm -rf /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
 
 echo "Перезапуск Jenkins..."
 sudo systemctl restart jenkins
 
-bash cred.sh
+bash plugin.sh
+
+# Видалення файлів для обходу Setup Wizard (на всякий випадок)
+sudo rm -rf /var/lib/jenkins/jenkins.install.UpgradeWizard.state
+sudo rm -rf /var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
 
 bash pipeline.sh
 
 echo "✅ Jenkins встановлено та налаштовано!"
-echo "Логін: admin"
-echo "Пароль: 1"
+echo "Логін: $JENKINS_USER"
+echo "Пароль: $JENKINS_PASSWORD"

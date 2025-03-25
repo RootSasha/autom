@@ -1,9 +1,6 @@
 #!/bin/bash
 
-JENKINS_URL="http://16.16.217.80:8080"
-JENKINS_USER="admin"
-JENKINS_PASSWORD="1"
-CLI_JAR="jenkins_files/jenkins-cli.jar"
+source config.sh
 
 plugins=(
     "cloudbees-folder"
@@ -25,7 +22,7 @@ for plugin in "${plugins[@]}"; do
     if [[ $? -ne 0 ]]; then
         echo "❌ Не вдалося встановити $plugin. Пропускаємо..."
     else
-      echo "✅ Плагін $plugin встановлено"
+        echo "✅ Плагін $plugin встановлено"
     fi
 done
 
