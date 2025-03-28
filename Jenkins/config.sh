@@ -3,7 +3,7 @@
 # Jenkins URL та креденціали
 JENKINS_URL="http://51.21.134.100:8080"
 JENKINS_USER="admin"
-JENKINS_PASSWORD="1"
+JENKINS_PASSWORD="****"
 
 # SSH-ключі та GitHub
 GITHUB_TOKEN=""
