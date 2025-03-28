@@ -8,7 +8,7 @@ JENKINS_PASSWORD="****"
 # SSH-ключі та GitHub
 GITHUB_TOKEN=""
 SSH_KEY_PATH="/root/.ssh/id_ed25519"
-GITHUB_EMAIL="sashamankovsky2019@gmail.com"
+GITHUB_EMAIL="*************@gmail.com"
 CREDENTIAL_ID="ssh-key-jenkins"
 
 # Docker Hub
