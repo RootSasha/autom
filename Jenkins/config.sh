@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Jenkins URL та креденціали
-JENKINS_URL="http://13.51.156.206:8080"
+JENKINS_URL="http://51.21.134.100:8080"
 JENKINS_USER="admin"
 JENKINS_PASSWORD="1"
 
