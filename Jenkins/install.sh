@@ -6,14 +6,6 @@ echo "Оновлення системи та встановлення необх
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install -y openjdk-17-jdk curl unzip docker-compose git awscli gh
 
-echo " Додаємо репозиторій GitHub CLI..."
-curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-
-echo " Встановлення GitHub CLI..."
-sudo apt update -y
-sudo apt install -y gh
-
 echo "Додаємо офіційний репозиторій Jenkins..."
 curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
 echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
