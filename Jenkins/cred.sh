@@ -65,7 +65,7 @@ sudo chmod 600 /var/lib/jenkins/.ssh/known_hosts
 sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/known_hosts
 
 echo "Даємо дозволи у файлі visudo..."
-echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker" | sudo tee -a /etc/sudoers
+echo "jenkins ALL=(ALL) NOPASSWD: /bin/bash, /usr/bin/docker, /home/ubuntu/Diplome/Jenkins/s3b.sh" | sudo tee -a /etc/sudoers
 
 sudo usermod -aG docker jenkins
 
