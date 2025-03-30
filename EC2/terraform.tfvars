@@ -1,0 +1,6 @@
+jenkins_password = "***"
+github_token = "***"
+dockerhub_password = "***"
+aws_access_key_id = "***"
+aws_secret_access_key = "***"
+github_email="***"
