@@ -14,6 +14,15 @@ plugins=(
     "git"
     "workflow-job"
     "workflow-cps"
+    "antisamy-markup-formatter"
+    "pipeline-graph-view"
+    "ssh-slaves"
+    "matrix-auth"
+    "pam-auth"
+    "ldap"
+    "email-ext"
+    "mailer"
+    "dark-theme"
 )
 
 for plugin in "${plugins[@]}"; do
