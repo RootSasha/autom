@@ -2,17 +2,20 @@ provider "aws" {
   region = "eu-north-1"
 }
 
+# Перевірика існуючих ресурсів
 data "aws_region" "current" {}
 
+# Шукає образ ubuntu
 data "aws_ami" "ubuntu" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"] # Назва образу
   }
-  owners = ["099720109477"]
+  owners = ["099720109477"] # ID власника 
 }
 
+# Створюється приватна VPC
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 
@@ -21,6 +24,7 @@ resource "aws_vpc" "main" {
   }
 }
 
+# Налаштовується gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
@@ -29,6 +33,7 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
+# Створюється таблиця маршрутизації
 resource "aws_route_table" "route_table" {
   vpc_id = aws_vpc.main.id
 
@@ -42,11 +47,13 @@ resource "aws_route_table" "route_table" {
   }
 }
 
+# Пов'язуєьться таблиця маршрутизацій та gw
 resource "aws_route_table_association" "route_table_association" {
   subnet_id     = aws_subnet.main.id
   route_table_id = aws_route_table.route_table.id
 }
 
+# Створюється subnet
 resource "aws_subnet" "main" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
@@ -58,6 +65,7 @@ resource "aws_subnet" "main" {
   }
 }
 
+# Налаштовуються security-groups
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh"
   description = "Allow SSH inbound traffic"
@@ -119,6 +127,7 @@ locals {
   config_file_content = file("config.txt")
 }
 
+# Створюється шаблон для інстанса
 resource "aws_launch_template" "instance_template" {
   name_prefix   = "jenkins-"
   image_id      = data.aws_ami.ubuntu.id
@@ -165,7 +174,7 @@ user_data = base64encode(<<-EOF
 )
 }
 
-
+# Додається auto-scaling
 resource "aws_autoscaling_group" "jenkins_asg" {
   desired_capacity  = 1
   max_size          = 3
@@ -184,6 +193,7 @@ resource "aws_autoscaling_group" "jenkins_asg" {
   }
 }
 
+# Отримується інформація про інстанс
 data "aws_instances" "jenkins" {
   filter {
     name   = "tag:Name"
